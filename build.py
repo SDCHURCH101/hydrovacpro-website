@@ -5,7 +5,7 @@
 import os, html, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "11"  # bump to cache-bust styles.css / app.js
+VER  = "12"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://www.hydrovacpro.com"
@@ -35,7 +35,6 @@ DBA_NAME     = "Hydrovac Pro"
 AK_LICENSE   = "2158460"
 AK_ENTITY    = "10185264"
 ENTITY_STATUS= "Good Standing"
-DUNS_NUMBER  = "053580433"
 UEI_CODE     = "Provided on request"
 CAGE_CODE    = "13HP6"
 USDOT_NUMBER = "4264044"
@@ -185,7 +184,6 @@ def local_business_ld():
       "@id": SITE + "/#business",
       "name": NAME,
       "legalName": LEGAL_NAME,
-      "duns": DUNS_NUMBER,
       "naics": NAICS_PRIMARY,
       "url": SITE + "/",
       "image": SITE + "/assets/img/hydrovac.jpg",
@@ -902,7 +900,6 @@ def capability_statement():
     codes = card("doc", "Federal registrations &amp; codes", [
         ("CAGE code", f'<span translate="no">{e(CAGE_CODE)}</span>'),
         ("UEI (SAM.gov)", f'<span translate="no">{e(UEI_CODE)}</span>'),
-        ("DUNS", f'<span translate="no">{e(DUNS_NUMBER)}</span>'),
         ("USDOT number", f'<span translate="no">{e(USDOT_NUMBER)}</span>'),
         ("NAICS codes", f'<ul class="cap-naics">{naics}</ul>'),
     ])
