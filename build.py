@@ -5,7 +5,7 @@
 import os, html, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "9"  # bump to cache-bust styles.css / app.js
+VER  = "10"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://www.hydrovacpro.com"
@@ -33,9 +33,12 @@ SISTER = [
 LEGAL_NAME   = "Sabe Capital, LLC"
 DBA_NAME     = "Hydrovac Pro"
 AK_LICENSE   = "2158460"
-AK_ENTITY    = "Provided on request"
-UEI_DUNS     = "Provided on request"
+AK_ENTITY    = "10185264"
+ENTITY_STATUS= "Good Standing"
+DUNS_NUMBER  = "053580433"
+UEI_CODE     = "Provided on request"
 CAGE_CODE    = "Provided on request"
+NAICS_PRIMARY = "238910"
 NAICS_CODES  = [
     ("238910", "Site Preparation Contractors"),
     ("562998", "All Other Miscellaneous Waste Management Services"),
@@ -180,6 +183,9 @@ def local_business_ld():
       "@type":["LocalBusiness","HomeAndConstructionBusiness"],
       "@id": SITE + "/#business",
       "name": NAME,
+      "legalName": LEGAL_NAME,
+      "duns": DUNS_NUMBER,
+      "naics": NAICS_PRIMARY,
       "url": SITE + "/",
       "image": SITE + "/assets/img/hydrovac.jpg",
       "logo": SITE + "/assets/img/favicon-512.png",
@@ -876,7 +882,9 @@ def capability_statement():
                 f'<dl class="cap-dl">{items}</dl></div>')
 
     naics = "".join(
-        f'<li><b translate="no">{c}</b> {e(d)}</li>' for c, d in NAICS_CODES)
+        f'<li><b translate="no">{c}</b> {e(d)}'
+        f'{" <span class=cap-primary>Primary</span>" if c==NAICS_PRIMARY else ""}</li>'
+        for c, d in NAICS_CODES)
     comp = ["Hydro excavation, daylighting & potholing","Slot trenching & utility verification",
             "Vactor 2100 jetter, culvert & sewer cleaning","Tank, sump & service-pit cleanouts",
             "Frozen-ground & permafrost excavation","Emergency, spill & after-hours response"]
@@ -885,12 +893,14 @@ def capability_statement():
     company = card("gov", "Company", [
         ("Legal entity", f'<span translate="no">{e(LEGAL_NAME)}</span>'),
         ("Doing business as", f'<span translate="no">{e(DBA_NAME)}</span>'),
-        ("Business structure", "Limited Liability Company (LLC)"),
+        ("Structure", "Limited Liability Company (Alaska, est. 2022)"),
         ("AK business license", f'<span translate="no">#{e(AK_LICENSE)}</span>'),
         ("AK entity number", f'<span translate="no">{e(AK_ENTITY)}</span>'),
+        ("State status", f'{e(ENTITY_STATUS)}'),
     ])
     codes = card("doc", "Federal registrations &amp; codes", [
-        ("UEI / DUNS", f'<span translate="no">{e(UEI_DUNS)}</span>'),
+        ("DUNS", f'<span translate="no">{e(DUNS_NUMBER)}</span>'),
+        ("UEI (SAM.gov)", f'<span translate="no">{e(UEI_CODE)}</span>'),
         ("CAGE code", f'<span translate="no">{e(CAGE_CODE)}</span>'),
         ("NAICS codes", f'<ul class="cap-naics">{naics}</ul>'),
     ])
