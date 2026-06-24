@@ -5,7 +5,7 @@
 import os, html, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "12"  # bump to cache-bust styles.css / app.js
+VER  = "13"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://www.hydrovacpro.com"
@@ -53,10 +53,11 @@ MAILING_ADDR = "PO Box 70200, Fairbanks, AK 99707"
 
 # ------------------------------------------------------------------ navigation
 NAV = [
-    ("index.html",      "Home"),
-    ("services.html",   "Services"),
-    ("equipment.html",  "Fleet"),
-    ("industries.html", "Industries"),
+    ("index.html",          "Home"),
+    ("services.html",       "Services"),
+    ("equipment.html",      "Fleet"),
+    ("industries.html",     "Industries"),
+    ("capabilities.html",   "Capabilities"),
     ("about.html",      "About"),
     ("contact.html",    "Contact"),
 ]
@@ -305,7 +306,6 @@ def nav(page):
 # ------------------------------------------------------------------ footer
 def footer():
     nav_links = "".join(f'<li><a href="{h}">{e(l)}</a></li>' for h,l in NAV)
-    nav_links += '<li><a href="contact.html#capability-statement">Capability Statement</a></li>'
     svc = ["Hydro Excavation","Daylighting & Potholing","Slot Trenching",
            "Jetter & Culvert Cleaning","Tank & Pit Cleanouts","Emergency Response"]
     svc_links = "".join(f'<li><a href="services.html">{e(s)}</a></li>' for s in svc)
@@ -794,7 +794,7 @@ def page_industries():
       <h3>Government buyer or prime contractor?</h3>
       <p>Our capability statement has the legal entity, codes, point of contact, and registrations your team needs to put us on a solicitation.</p>
     </div>
-    <a class="btn btn-orange" href="contact.html#capability-statement">View capability statement {icon('arrow')}</a>
+    <a class="btn btn-orange" href="capabilities.html">View capability statement {icon('arrow')}</a>
   </div>
 </div></section>
 
@@ -872,8 +872,8 @@ def page_about():
 </section>
 """ + tail()
 
-# ------------------------------------------------------------------ CONTACT
-def capability_statement():
+# ------------------------------------------------------------------ CAPABILITY STATEMENT
+def capability_statement(with_heading=True):
     def card(ic, title, rows):
         items = "".join(
             f'<div class="cap-row"><dt>{e(l)}</dt><dd>{v}</dd></div>' for l, v in rows)
@@ -914,14 +914,16 @@ def capability_statement():
         ("Mailing", f'<span translate="no">{e(MAILING_ADDR)}</span>'),
         ("Service area", "Interior Alaska, the North Slope &amp; statewide on contract"),
     ])
-    return f"""
-<section class="capstmt" id="capability-statement">
-  <div class="wrap">
+    heading = f"""
     <div class="sec-head center">
       {eyebrow('For government & prime contractors')}
       <h2>Capability Statement</h2>
       <p class="lead">The back-office details agencies, primes, and procurement teams need to add Hydrovac Pro to a solicitation, purchase order, or subcontract.</p>
-    </div>
+    </div>""" if with_heading else ""
+    return f"""
+<section class="capstmt" id="capability-statement">
+  <div class="wrap">
+    {heading}
     <div class="cap-grid">{company}{codes}{poc}{addr}</div>
     <div class="cap-foot">
       <div class="cap-comp">
@@ -940,6 +942,16 @@ def capability_statement():
     <p class="cap-cert">Licensed, bonded &amp; insured · OSHA compliant · DOT registered · Small business · Fairbanks, Alaska</p>
   </div>
 </section>"""
+
+def page_capabilities():
+    h = head("capabilities.html",
+        "Capability Statement | Hydrovac Pro | Government Contracting, Fairbanks AK",
+        "Hydrovac Pro capability statement for government and prime contractors: Sabe Capital LLC dba Hydrovac Pro, CAGE 13HP6, USDOT 4264044, NAICS 238910, point of contact, registrations, and core competencies.")
+    return h + page_hero("For government & prime contractors",
+        "Capability Statement",
+        "Everything an agency, prime, or procurement team needs to add Hydrovac Pro to a solicitation, purchase order, or subcontract, in one place.",
+        "assets/img/daylighting.jpg",
+        "Hydrovac Pro crew daylighting buried utilities on an Alaska job site") + capability_statement(with_heading=False) + tail()
 
 def page_contact():
     map_q = "300 Barnette St, Fairbanks, AK 99701"
@@ -1013,8 +1025,6 @@ def page_contact():
   </div>
 </section>
 
-{capability_statement()}
-
 <section class="map-sec">
   <iframe title="Hydrovac Pro location map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
     src="https://www.google.com/maps?q={map_q.replace(' ','+').replace(',','%2C')}&output=embed"></iframe>
@@ -1070,6 +1080,7 @@ def main():
     write("services.html",   page_services())
     write("equipment.html",  page_equipment())
     write("industries.html", page_industries())
+    write("capabilities.html", page_capabilities())
     write("about.html",      page_about())
     write("contact.html",    page_contact())
     write("404.html",        page_404())
