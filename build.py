@@ -2,10 +2,10 @@
 # Hydrovac Pro static site generator.
 # Edit this file, then run:  python3 build.py
 # Emits the 6 HTML pages + robots.txt + sitemap.xml + manifest + 404 into this dir.
-import os, html, datetime
+import os, html, datetime, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "14"  # bump to cache-bust styles.css / app.js
+VER  = "15"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://www.hydrovacpro.com"
@@ -1075,6 +1075,10 @@ def page_404():
 
 # ------------------------------------------------------------------ build
 def write(path, content):
+    if path.endswith(".html"):
+        # cache-bust local image assets so optimized versions load immediately
+        content = re.sub(r'(assets/img/[A-Za-z0-9_-]+\.(?:jpg|png|webp))(?=["?])',
+                         rf'\1?v={VER}', content)
     with open(os.path.join(HERE, path), "w", encoding="utf-8") as f:
         f.write(content)
     print("wrote", path)
