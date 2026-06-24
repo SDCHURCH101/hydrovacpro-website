@@ -5,7 +5,7 @@
 import os, html, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "10"  # bump to cache-bust styles.css / app.js
+VER  = "11"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://www.hydrovacpro.com"
@@ -37,7 +37,8 @@ AK_ENTITY    = "10185264"
 ENTITY_STATUS= "Good Standing"
 DUNS_NUMBER  = "053580433"
 UEI_CODE     = "Provided on request"
-CAGE_CODE    = "Provided on request"
+CAGE_CODE    = "13HP6"
+USDOT_NUMBER = "4264044"
 NAICS_PRIMARY = "238910"
 NAICS_CODES  = [
     ("238910", "Site Preparation Contractors"),
@@ -899,9 +900,10 @@ def capability_statement():
         ("State status", f'{e(ENTITY_STATUS)}'),
     ])
     codes = card("doc", "Federal registrations &amp; codes", [
-        ("DUNS", f'<span translate="no">{e(DUNS_NUMBER)}</span>'),
-        ("UEI (SAM.gov)", f'<span translate="no">{e(UEI_CODE)}</span>'),
         ("CAGE code", f'<span translate="no">{e(CAGE_CODE)}</span>'),
+        ("UEI (SAM.gov)", f'<span translate="no">{e(UEI_CODE)}</span>'),
+        ("DUNS", f'<span translate="no">{e(DUNS_NUMBER)}</span>'),
+        ("USDOT number", f'<span translate="no">{e(USDOT_NUMBER)}</span>'),
         ("NAICS codes", f'<ul class="cap-naics">{naics}</ul>'),
     ])
     poc = card("phone", "Point of contact", [
