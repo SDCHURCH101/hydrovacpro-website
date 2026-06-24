@@ -5,7 +5,7 @@
 import os, html, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "13"  # bump to cache-bust styles.css / app.js
+VER  = "14"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://www.hydrovacpro.com"
@@ -35,7 +35,7 @@ DBA_NAME     = "Hydrovac Pro"
 AK_LICENSE   = "2158460"
 AK_ENTITY    = "10185264"
 ENTITY_STATUS= "Good Standing"
-UEI_CODE     = "Provided on request"
+UEI_CODE     = "VHFBXM1WW2G1"
 CAGE_CODE    = "13HP6"
 USDOT_NUMBER = "4264044"
 NAICS_PRIMARY = "238910"
@@ -186,6 +186,10 @@ def local_business_ld():
       "name": NAME,
       "legalName": LEGAL_NAME,
       "naics": NAICS_PRIMARY,
+      "identifier":[
+        {"@type":"PropertyValue","propertyID":"SAM UEI","value":UEI_CODE},
+        {"@type":"PropertyValue","propertyID":"CAGE","value":CAGE_CODE},
+      ],
       "url": SITE + "/",
       "image": SITE + "/assets/img/hydrovac.jpg",
       "logo": SITE + "/assets/img/favicon-512.png",
