@@ -5,7 +5,7 @@
 import os, html, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "8"  # bump to cache-bust styles.css / app.js
+VER  = "9"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://www.hydrovacpro.com"
@@ -26,6 +26,27 @@ SISTER = [
     ("Septic Pro Alaska", "https://www.septicproak.com", "Septic pumping, thawing & tank service", "sister-septic.png"),
     ("Husband for an Hour", "https://www.husbandforhour.com", "Flat-rate handyman & property services", "sister-husband.png"),
 ]
+
+# ------------------------------------------------------------------ government / capability statement
+# Verified from State of Alaska Business License #2158460 (SABE CAPITAL LLC dba Hydrovac Pro).
+# Federal codes left as "Provided on request" until confirmed by the company (do NOT guess).
+LEGAL_NAME   = "Sabe Capital, LLC"
+DBA_NAME     = "Hydrovac Pro"
+AK_LICENSE   = "2158460"
+AK_ENTITY    = "Provided on request"
+UEI_DUNS     = "Provided on request"
+CAGE_CODE    = "Provided on request"
+NAICS_CODES  = [
+    ("238910", "Site Preparation Contractors"),
+    ("562998", "All Other Miscellaneous Waste Management Services"),
+    ("237990", "Other Heavy & Civil Engineering Construction"),
+    ("562910", "Remediation Services"),
+    ("484220", "Specialized Freight Trucking, Local"),
+]
+POC_NAME     = "Fernando Escobar"
+POC_TITLE    = "General Manager"
+POC_EMAIL    = "gm@hydrovacpro.com"
+MAILING_ADDR = "PO Box 70200, Fairbanks, AK 99707"
 
 # ------------------------------------------------------------------ navigation
 NAV = [
@@ -279,6 +300,7 @@ def nav(page):
 # ------------------------------------------------------------------ footer
 def footer():
     nav_links = "".join(f'<li><a href="{h}">{e(l)}</a></li>' for h,l in NAV)
+    nav_links += '<li><a href="contact.html#capability-statement">Capability Statement</a></li>'
     svc = ["Hydro Excavation","Daylighting & Potholing","Slot Trenching",
            "Jetter & Culvert Cleaning","Tank & Pit Cleanouts","Emergency Response"]
     svc_links = "".join(f'<li><a href="services.html">{e(s)}</a></li>' for s in svc)
@@ -761,7 +783,15 @@ def page_industries():
         "Built for the work that cannot afford a mistake",
         "Utilities, agencies, mines, and industrial operators choose Hydrovac Pro because a strike-free record is not a marketing line. It is how we run every job.",
         "assets/img/daylighting.jpg","Hydrovac Pro daylighting utilities for an Alaska client") + f"""
-<section class="ind-cards"><div class="wrap"><div class="ind-grid">{cards}</div></div></section>
+<section class="ind-cards"><div class="wrap"><div class="ind-grid">{cards}</div>
+  <div class="gov-cta">
+    <div>
+      <h3>Government buyer or prime contractor?</h3>
+      <p>Our capability statement has the legal entity, codes, point of contact, and registrations your team needs to put us on a solicitation.</p>
+    </div>
+    <a class="btn btn-orange" href="contact.html#capability-statement">View capability statement {icon('arrow')}</a>
+  </div>
+</div></section>
 
 <section class="band-quote">
   <div class="wrap">
@@ -838,6 +868,70 @@ def page_about():
 """ + tail()
 
 # ------------------------------------------------------------------ CONTACT
+def capability_statement():
+    def card(ic, title, rows):
+        items = "".join(
+            f'<div class="cap-row"><dt>{e(l)}</dt><dd>{v}</dd></div>' for l, v in rows)
+        return (f'<div class="cap-card reveal"><h3><span class="svc-ic">{icon(ic)}</span>{title}</h3>'
+                f'<dl class="cap-dl">{items}</dl></div>')
+
+    naics = "".join(
+        f'<li><b translate="no">{c}</b> {e(d)}</li>' for c, d in NAICS_CODES)
+    comp = ["Hydro excavation, daylighting & potholing","Slot trenching & utility verification",
+            "Vactor 2100 jetter, culvert & sewer cleaning","Tank, sump & service-pit cleanouts",
+            "Frozen-ground & permafrost excavation","Emergency, spill & after-hours response"]
+    comp_html = "".join(f'<li>{icon("check")}{e(c)}</li>' for c in comp)
+
+    company = card("gov", "Company", [
+        ("Legal entity", f'<span translate="no">{e(LEGAL_NAME)}</span>'),
+        ("Doing business as", f'<span translate="no">{e(DBA_NAME)}</span>'),
+        ("Business structure", "Limited Liability Company (LLC)"),
+        ("AK business license", f'<span translate="no">#{e(AK_LICENSE)}</span>'),
+        ("AK entity number", f'<span translate="no">{e(AK_ENTITY)}</span>'),
+    ])
+    codes = card("doc", "Federal registrations &amp; codes", [
+        ("UEI / DUNS", f'<span translate="no">{e(UEI_DUNS)}</span>'),
+        ("CAGE code", f'<span translate="no">{e(CAGE_CODE)}</span>'),
+        ("NAICS codes", f'<ul class="cap-naics">{naics}</ul>'),
+    ])
+    poc = card("phone", "Point of contact", [
+        ("Name", f'<span translate="no">{e(POC_NAME)}</span>'),
+        ("Title", e(POC_TITLE)),
+        ("Email", f'<a href="mailto:{POC_EMAIL}" translate="no">{POC_EMAIL}</a>'),
+        ("Phone", f'<a href="tel:{PHONE_TEL}" translate="no">{PHONE_DISPLAY}</a>'),
+    ])
+    addr = card("pin", "Addresses", [
+        ("Physical", f'<span translate="no">{ADDR_STREET}<br>{ADDR_CITY}, {ADDR_STATE} {ADDR_ZIP}</span>'),
+        ("Mailing", f'<span translate="no">{e(MAILING_ADDR)}</span>'),
+        ("Service area", "Interior Alaska, the North Slope &amp; statewide on contract"),
+    ])
+    return f"""
+<section class="capstmt" id="capability-statement">
+  <div class="wrap">
+    <div class="sec-head center">
+      {eyebrow('For government & prime contractors')}
+      <h2>Capability Statement</h2>
+      <p class="lead">The back-office details agencies, primes, and procurement teams need to add Hydrovac Pro to a solicitation, purchase order, or subcontract.</p>
+    </div>
+    <div class="cap-grid">{company}{codes}{poc}{addr}</div>
+    <div class="cap-foot">
+      <div class="cap-comp">
+        <h3>Core competencies</h3>
+        <ul class="ticklist">{comp_html}</ul>
+      </div>
+      <div class="cap-note">
+        <h3>On request</h3>
+        <p>W-9, certificate of insurance, references and past performance, bonding capacity, and our full capability statement are available to qualified buyers.</p>
+        <div class="cap-cta">
+          <a class="btn btn-orange" href="mailto:{POC_EMAIL}?subject=Capability%20statement%20request">{icon('mail')} Email {POC_NAME.split()[0]}</a>
+          <a class="btn btn-outline" href="tel:{PHONE_TEL}">{icon('phone')} {PHONE_DISPLAY}</a>
+        </div>
+      </div>
+    </div>
+    <p class="cap-cert">Licensed, bonded &amp; insured · OSHA compliant · DOT registered · Small business · Fairbanks, Alaska</p>
+  </div>
+</section>"""
+
 def page_contact():
     map_q = "300 Barnette St, Fairbanks, AK 99701"
     h = head("contact.html",
@@ -909,6 +1003,8 @@ def page_contact():
     </div>
   </div>
 </section>
+
+{capability_statement()}
 
 <section class="map-sec">
   <iframe title="Hydrovac Pro location map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
