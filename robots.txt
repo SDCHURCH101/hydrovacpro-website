@@ -58,4 +58,4 @@ Allow: /
 User-agent: Meta-ExternalAgent
 Allow: /
 
-Sitemap: https://www.hydrovacpro.com/sitemap.xml
+Sitemap: https://hydrovacpro.com/sitemap.xml
