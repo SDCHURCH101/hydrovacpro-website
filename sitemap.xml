@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <url><loc>https://www.hydrovacpro.com/</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>1.0</priority>
+  <url><loc>https://www.hydrovacpro.com/</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>1.0</priority>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/hero.webp</image:loc></image:image>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/daylighting.webp</image:loc></image:image>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/jetter.webp</image:loc></image:image>
   </url>
-  <url><loc>https://www.hydrovacpro.com/services.html</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+  <url><loc>https://www.hydrovacpro.com/services.html</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/daylighting.webp</image:loc></image:image>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/culvert.webp</image:loc></image:image>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/trenching.webp</image:loc></image:image>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/pit.webp</image:loc></image:image>
   </url>
-  <url><loc>https://www.hydrovacpro.com/equipment.html</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+  <url><loc>https://www.hydrovacpro.com/equipment.html</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/hydrovac.webp</image:loc></image:image>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/jetter.webp</image:loc></image:image>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/hydrovac-4.webp</image:loc></image:image>
   </url>
-  <url><loc>https://www.hydrovacpro.com/industries.html</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+  <url><loc>https://www.hydrovacpro.com/industries.html</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/daylighting.webp</image:loc></image:image>
   </url>
-  <url><loc>https://www.hydrovacpro.com/capabilities.html</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+  <url><loc>https://www.hydrovacpro.com/capabilities.html</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/daylighting.webp</image:loc></image:image>
   </url>
-  <url><loc>https://www.hydrovacpro.com/about.html</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+  <url><loc>https://www.hydrovacpro.com/about.html</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/hydrovac-2.webp</image:loc></image:image>
     <image:image><image:loc>https://www.hydrovacpro.com/assets/img/truck-worker.webp</image:loc></image:image>
   </url>
-  <url><loc>https://www.hydrovacpro.com/contact.html</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
+  <url><loc>https://www.hydrovacpro.com/contact.html</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>
   </url>
 </urlset>

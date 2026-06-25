@@ -21,6 +21,7 @@ GEO_LAT = "64.8401"
 GEO_LNG = "-147.7200"
 FACEBOOK = "https://www.facebook.com/61559111513765"
 INDEXNOW_KEY = "10354ce3ab3bb8b15729b39df7118aff"  # IndexNow (Bing/Yandex) submission key
+GOOGLE_VERIFY_FILE = "googleb0206cd9eeaf4d05.html"  # Google Search Console HTML-file verification
 GMAPS    = "https://www.google.com/maps/search/?api=1&query=Hydrovac+Pro+300+Barnette+St+Fairbanks+AK"
 GREVIEWS = "https://www.google.com/maps/search/?api=1&query=Hydrovac+Pro+Fairbanks+AK+reviews"
 SISTER = [
@@ -1251,6 +1252,10 @@ def main():
     write("sitemap.xml",     sitemap())
     write("llms.txt",        llms_txt())
     write(f"{INDEXNOW_KEY}.txt", INDEXNOW_KEY)   # IndexNow ownership key
+    # Google Search Console verification file — write verbatim (no HTML processing)
+    with open(os.path.join(HERE, GOOGLE_VERIFY_FILE), "w", encoding="utf-8") as f:
+        f.write("google-site-verification: " + GOOGLE_VERIFY_FILE)
+    print("wrote", GOOGLE_VERIFY_FILE)
     write("site.webmanifest",manifest())
     print("Build complete.")
 
