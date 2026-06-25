@@ -220,6 +220,8 @@ a.tb-item:hover{color:#fff}
 
 /* faq */
 .faq-sec{padding:84px 0}
+.faq-center{background:var(--mist);border-top:1px solid var(--line)}
+.faq-wide{max-width:840px;margin-inline:auto}
 .faq-in{display:grid;grid-template-columns:.8fr 1.2fr;gap:48px;align-items:start}
 .faq-head{position:sticky;top:120px}
 .faq-head h2{margin-bottom:.7rem}

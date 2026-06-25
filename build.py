@@ -5,7 +5,7 @@
 import os, html, datetime, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "16"  # bump to cache-bust styles.css / app.js
+VER  = "17"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://www.hydrovacpro.com"
@@ -126,7 +126,7 @@ def head(page, title, desc, extra_ld=None, og_img="assets/img/og-image.jpg"):
     canonical = SITE + "/" + ("" if page == "index.html" else page)
     if page == "index.html":
         canonical = SITE + "/"
-    ld = [local_business_ld()]
+    ld = [local_business_ld(), website_ld(), webpage_ld(page, title, desc, canonical)]
     ld.append(breadcrumb_ld(page, title))
     if extra_ld:
         ld.extend(extra_ld)
@@ -222,6 +222,10 @@ def local_business_ld():
       }],
       "sameAs":[FACEBOOK],
       "knowsLanguage":["en"],
+      "contactPoint":[{
+        "@type":"ContactPoint","telephone":PHONE_TEL,"email":EMAIL,
+        "contactType":"sales","areaServed":"US-AK","availableLanguage":["en"]
+      }],
       "aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"3","bestRating":"5"},
       "hasOfferCatalog":{
         "@type":"OfferCatalog","name":"Hydro Excavation & Vacuum Services",
@@ -238,11 +242,46 @@ def local_business_ld():
     return _json.dumps(data, ensure_ascii=False)
 
 def breadcrumb_ld(page, title):
+    canonical = SITE + "/" + ("" if page == "index.html" else page)
     items = [{"@type":"ListItem","position":1,"name":"Home","item":SITE+"/"}]
     if page != "index.html":
         clean = title.split("|")[0].split("-")[0].strip()
-        items.append({"@type":"ListItem","position":2,"name":clean,"item":SITE+"/"+page})
-    return _json.dumps({"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":items}, ensure_ascii=False)
+        items.append({"@type":"ListItem","position":2,"name":clean,"item":canonical})
+    return _json.dumps({"@context":"https://schema.org","@type":"BreadcrumbList",
+                        "@id":canonical+"#breadcrumb","itemListElement":items}, ensure_ascii=False)
+
+def website_ld():
+    return _json.dumps({
+      "@context":"https://schema.org","@type":"WebSite","@id":SITE+"/#website",
+      "url":SITE+"/","name":NAME,"inLanguage":"en-US",
+      "publisher":{"@id":SITE+"/#business"}
+    }, ensure_ascii=False)
+
+# page filename -> schema WebPage subtype
+_PAGE_TYPE = {
+  "contact.html":"ContactPage", "about.html":"AboutPage",
+  "services.html":"CollectionPage", "industries.html":"CollectionPage",
+  "equipment.html":"CollectionPage", "capabilities.html":"CollectionPage",
+}
+def webpage_ld(page, title, desc, canonical):
+    today = datetime.date.today().isoformat()
+    data = {
+      "@context":"https://schema.org",
+      "@type":_PAGE_TYPE.get(page,"WebPage"),
+      "@id":canonical+"#webpage",
+      "url":canonical,
+      "name":title,
+      "description":desc,
+      "isPartOf":{"@id":SITE+"/#website"},
+      "about":{"@id":SITE+"/#business"},
+      "publisher":{"@id":SITE+"/#business"},
+      "primaryImageOfPage":SITE+"/assets/img/hero.jpg",
+      "inLanguage":"en-US",
+      "datePublished":"2026-06-24",
+      "dateModified":today,
+      "breadcrumb":{"@id":canonical+"#breadcrumb"}
+    }
+    return _json.dumps(data, ensure_ascii=False)
 
 def faq_ld(qa):
     return _json.dumps({
@@ -523,7 +562,7 @@ def page_index():
     ]
     h = head("index.html",
         "Hydrovac Pro | Hydro Excavation & Vacuum Truck Services in Fairbanks, Alaska",
-        "Non-destructive hydro excavation, daylighting, potholing, jetter, and vacuum truck services for utilities, government, mining, and industry across Interior Alaska. 13 years, perfect safety record. Call (907) 759-8068.",
+        "Non-destructive hydro excavation, daylighting, potholing, jetter and vacuum truck services for utilities, government, mining and industry across Interior Alaska.",
         extra_ld=extra)
     return h + f"""
 <section class="hero">
@@ -642,6 +681,23 @@ def page_hero(eyebrow_txt, title, lead, img, alt):
   </div>
 </section>"""
 
+# ------------------------------------------------------------------ reusable FAQ section
+def faq_section(heading, lead, faqs):
+    items = "".join(
+        f'<details class="faq"><summary>{q}{icon("arrow")}</summary><p>{a}</p></details>'
+        for q, a in faqs)
+    return f"""
+<section class="faq-sec faq-center">
+  <div class="wrap">
+    <div class="sec-head center">
+      {eyebrow('Answers')}
+      <h2>{heading}</h2>
+      <p class="lead">{e(lead)}</p>
+    </div>
+    <div class="faq-list faq-wide">{items}</div>
+  </div>
+</section>"""
+
 # ------------------------------------------------------------------ SERVICES
 def page_services():
     SVCS = [
@@ -687,16 +743,26 @@ def page_services():
             <a class="btn btn-orange" href="contact.html">Request a Bid {icon('arrow')}</a>
           </div>
         </article>"""
+    svc_faqs = [
+      ("How does hydro excavation work?","Hydro excavation uses pressurized water to break up soil and a high-volume vacuum to remove it into the truck's debris tank. Because nothing mechanical touches the ground, buried utilities are exposed without damage. It is also called hydrovac, daylighting, or potholing."),
+      ("Is hydro excavation safer than digging with a backhoe or auger?","Yes. Water and vacuum cannot cut, crush, or nick a buried line the way a blade or auger can, which is why utilities and agencies use hydro excavation to expose gas, power, water, sewer, fiber, and pipelines. Hydrovac Pro has a perfect safety record with zero utility strikes."),
+      ("Can you excavate frozen ground in winter?","Yes. Our hydrovac is hot-water capable, so we cut through Alaska frost and permafrost year round, including jobs that conventional equipment cannot touch."),
+      ("Do you clean culverts, storm drains, and sewers?","Yes. Our Vactor 2100 combination jetter scours culverts, storm lines, and sewer mains with high-pressure water and recovers the silt, debris, and ice by vacuum."),
+      ("What areas does Hydrovac Pro serve?","We are based in Fairbanks and serve North Pole, the Fairbanks North Star Borough, Interior Alaska, and the North Slope, with statewide service available on contract."),
+      ("How do I get a bid?","Call (907) 759-8068 or send your scope through our contact page. For public bids and RFPs we return competitive pricing quickly, and we answer emergency and after-hours calls."),
+    ]
     extra = [service_ld(t.replace('&amp;','and'), d) for _,t,_,_,d,_ in SVCS]
+    extra.append(faq_ld(svc_faqs))
     h = head("services.html",
         "Services | Hydro Excavation, Jetter & Vacuum Truck Services | Hydrovac Pro",
-        "Daylighting, potholing, slot trenching, Vactor 2100 jetter and culvert cleaning, tank and pit cleanouts, frozen ground excavation, and emergency response across Interior Alaska.",
+        "Daylighting, potholing, slot trenching, Vactor 2100 jetter and culvert cleaning, tank and pit cleanouts, frozen-ground excavation, and emergency response across Interior Alaska.",
         extra_ld=extra)
     return h + page_hero("What we do",
         "Hydro excavation and vacuum services for every challenge",
         "Two specialized trucks and an experienced crew, ready for the daylighting, trenching, cleaning, and emergency work that keeps Alaska's infrastructure safe.",
         "assets/img/boom.jpg","Hydrovac Pro boom excavating on an Alaska job site") + f"""
 <section class="svc-blocks"><div class="wrap">{blocks}</div></section>
+{faq_section("Hydro excavation, answered", "Common questions about hydrovac, daylighting, jetter work, and how we run a job.", svc_faqs)}
 """ + tail()
 
 # ------------------------------------------------------------------ EQUIPMENT / FLEET
@@ -948,14 +1014,25 @@ def capability_statement(with_heading=True):
 </section>"""
 
 def page_capabilities():
+    gov_faqs = [
+      ("Is Hydrovac Pro registered for government contracting?",f"Yes. {LEGAL_NAME} (dba {NAME}) is registered with CAGE code {CAGE_CODE}, SAM.gov UEI {UEI_CODE}, USDOT {USDOT_NUMBER}, Alaska Business License #{AK_LICENSE}, and Alaska Entity #{AK_ENTITY} (Good Standing). Primary NAICS is {NAICS_PRIMARY} (Site Preparation Contractors)."),
+      ("Is Hydrovac Pro a small business?","Yes. We are a small business based in Fairbanks, Alaska, licensed, bonded, insured, OSHA compliant, and DOT registered."),
+      ("Can you provide a W-9, certificate of insurance, and references?","Yes. A W-9, certificate of insurance, references, past performance, and bonding capacity are available to qualified buyers on request."),
+      ("Who is the point of contact for solicitations?",f"{POC_NAME}, {POC_TITLE}. Email {POC_EMAIL} or call {PHONE_DISPLAY}."),
+      ("What can Hydrovac Pro do on a contract?","Hydro excavation (daylighting and potholing), slot trenching, Vactor 2100 jetter and culvert cleaning, tank and service-pit cleanouts, frozen-ground excavation, and emergency or spill response across Interior Alaska and the North Slope."),
+    ]
     h = head("capabilities.html",
         "Capability Statement | Hydrovac Pro | Government Contracting, Fairbanks AK",
-        "Hydrovac Pro capability statement for government and prime contractors: Sabe Capital LLC dba Hydrovac Pro, CAGE 13HP6, USDOT 4264044, NAICS 238910, point of contact, registrations, and core competencies.")
+        "Hydrovac Pro capability statement: Sabe Capital LLC dba Hydrovac Pro, CAGE 13HP6, UEI VHFBXM1WW2G1, USDOT 4264044, NAICS 238910, point of contact and registrations for government buyers.",
+        extra_ld=[faq_ld(gov_faqs)])
     return h + page_hero("For government & prime contractors",
         "Capability Statement",
         "Everything an agency, prime, or procurement team needs to add Hydrovac Pro to a solicitation, purchase order, or subcontract, in one place.",
         "assets/img/daylighting.jpg",
-        "Hydrovac Pro crew daylighting buried utilities on an Alaska job site") + capability_statement(with_heading=False) + tail()
+        "Hydrovac Pro crew daylighting buried utilities on an Alaska job site") + capability_statement(with_heading=False) + faq_section(
+        "Government contracting questions",
+        "Quick answers for agencies, primes, and procurement teams evaluating Hydrovac Pro.",
+        gov_faqs) + tail()
 
 def page_contact():
     map_q = "300 Barnette St, Fairbanks, AK 99701"
@@ -1037,16 +1114,90 @@ def page_contact():
 
 # ------------------------------------------------------------------ static files
 def robots():
-    return f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n"
+    ai_bots = ["GPTBot","OAI-SearchBot","ChatGPT-User","PerplexityBot","Perplexity-User",
+               "ClaudeBot","Claude-Web","anthropic-ai","Google-Extended","Applebot",
+               "Applebot-Extended","Bingbot","CCBot","Amazonbot","DuckDuckBot","cohere-ai",
+               "YouBot","Meta-ExternalAgent"]
+    ai_block = "".join(f"\nUser-agent: {b}\nAllow: /\n" for b in ai_bots)
+    return ("# Hydrovac Pro — https://www.hydrovacpro.com\n"
+            "# Search engines and AI / answer engines are welcome to crawl and cite this site.\n\n"
+            "User-agent: *\nAllow: /\n"
+            f"{ai_block}\n"
+            f"Sitemap: {SITE}/sitemap.xml\n")
+
+def llms_txt():
+    base = SITE
+    naics = ", ".join(f"{c} ({d})" for c,d in NAICS_CODES[:3])
+    return f"""# {NAME}
+
+> {NAME} (legal entity {LEGAL_NAME}) is a Fairbanks, Alaska hydro-excavation and vacuum-truck contractor. We provide non-destructive digging (hydrovac daylighting, potholing, slot trenching), Vactor 2100 jetter and culvert cleaning, tank and service-pit cleanouts, frozen-ground excavation, and emergency / spill response for utilities, government agencies, mining, oil & gas, construction, and environmental clients across Interior Alaska and the North Slope. 13 years of experience and a perfect safety record (zero utility strikes).
+
+## Company facts
+- Legal entity: {LEGAL_NAME} (doing business as {NAME})
+- Headquarters: {ADDR_STREET}, {ADDR_CITY}, {ADDR_STATE} {ADDR_ZIP}
+- Mailing: {MAILING_ADDR}
+- Phone: {PHONE_DISPLAY}
+- Email: {EMAIL}
+- Service area: Fairbanks, North Pole, the Fairbanks North Star Borough, Interior Alaska, and the North Slope; statewide on contract
+- Credentials: Licensed, bonded, and insured; OSHA compliant; DOT registered; small business
+- Government identifiers: CAGE {CAGE_CODE}, UEI {UEI_CODE}, USDOT {USDOT_NUMBER}, AK Business License #{AK_LICENSE}, AK Entity #{AK_ENTITY}; primary NAICS {NAICS_PRIMARY}
+- Point of contact: {POC_NAME}, {POC_TITLE}, {POC_EMAIL}
+
+## What is hydro excavation (hydrovac)?
+Hydro excavation, also called hydrovac, daylighting, or potholing, uses pressurized water to break up soil and a powerful vacuum to remove it. Nothing mechanical touches the ground, so buried utilities (power, gas, water, sewer, fiber, pipelines) are exposed without damage. It is the safest way to dig near buried infrastructure.
+
+## Equipment
+- Tornado F4 hydrovac: 13-cubic-yard debris tank, 8-inch boom-mounted suction, high-pressure and hot-water capable for frozen ground.
+- Vactor 2100 jetter: combination jetter and vacuum truck for culverts, storm lines, sewers, and catch basins.
+
+## Services
+- Daylighting & potholing — expose buried utilities intact before boring, trenching, or design.
+- Slot trenching — clean, narrow trenches for conduit, pipe, and cable with minimal restoration.
+- Vactor 2100 jetter & culvert cleaning — clear culverts, storm drains, and sewer mains.
+- Service pit & tank cleanouts — vacuum sludge, residue, and debris from pits and tanks.
+- Cold-weather / frozen-ground excavation — hot water and steam cut Alaska frost and permafrost year round.
+- Emergency & spill response — after-hours vacuum, water recovery, and cleanup.
+
+## Industries served
+Utilities & telecom, government & municipal (DOT, FAA, boroughs), mining, oil & gas / pipeline, construction & general contractors, environmental & industrial.
+
+## Key pages
+- Home: {base}/
+- Services: {base}/services.html
+- Fleet & equipment: {base}/equipment.html
+- Industries: {base}/industries.html
+- Capability statement (government contracting): {base}/capabilities.html
+- About: {base}/about.html
+- Contact / request a bid: {base}/contact.html
+
+## Contact
+Call {PHONE_DISPLAY} or email {EMAIL} to request a competitive, no-obligation bid. Emergency and after-hours response available.
+"""
 
 def sitemap():
     today = datetime.date.today().isoformat()
+    imgs = {
+      "index.html":       ["hero","daylighting","jetter"],
+      "services.html":    ["daylighting","culvert","trenching","pit"],
+      "equipment.html":   ["hydrovac","jetter","hydrovac-4"],
+      "industries.html":  ["daylighting"],
+      "capabilities.html":["daylighting"],
+      "about.html":       ["hydrovac-2","truck-worker"],
+      "contact.html":     [],
+    }
     urls = ""
     for href,_ in NAV:
         loc = SITE + "/" + ("" if href=="index.html" else href)
         pr = "1.0" if href=="index.html" else "0.8"
-        urls += f"  <url><loc>{loc}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>\n"
-    return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls+'</urlset>\n'
+        imgtags = "".join(
+            f"\n    <image:image><image:loc>{SITE}/assets/img/{n}.webp</image:loc></image:image>"
+            for n in imgs.get(href, []))
+        urls += (f"  <url><loc>{loc}</loc><lastmod>{today}</lastmod>"
+                 f"<changefreq>monthly</changefreq><priority>{pr}</priority>{imgtags}\n  </url>\n")
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+            'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n'
+            + urls + '</urlset>\n')
 
 def manifest():
     return _json.dumps({
@@ -1097,6 +1248,7 @@ def main():
     write("404.html",        page_404())
     write("robots.txt",      robots())
     write("sitemap.xml",     sitemap())
+    write("llms.txt",        llms_txt())
     write("site.webmanifest",manifest())
     print("Build complete.")
 
