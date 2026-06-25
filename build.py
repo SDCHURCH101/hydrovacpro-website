@@ -21,7 +21,8 @@ GEO_LAT = "64.8401"
 GEO_LNG = "-147.7200"
 FACEBOOK = "https://www.facebook.com/61559111513765"
 INDEXNOW_KEY = "10354ce3ab3bb8b15729b39df7118aff"  # IndexNow (Bing/Yandex) submission key
-GOOGLE_VERIFY_FILE = "googleb0206cd9eeaf4d05.html"  # Google Search Console HTML-file verification
+GOOGLE_VERIFY_FILE = "googleb0206cd9eeaf4d05.html"  # Google Search Console HTML-file verification (www property)
+GOOGLE_SITE_VERIFICATION = "0vKteFWp5z_bEcqp4P3C-2Xy_M807xu2fBGeNYntc8g"  # GSC meta-tag (apex property)
 GMAPS    = "https://www.google.com/maps/search/?api=1&query=Hydrovac+Pro+300+Barnette+St+Fairbanks+AK"
 GREVIEWS = "https://www.google.com/maps/search/?api=1&query=Hydrovac+Pro+Fairbanks+AK+reviews"
 SISTER = [
@@ -143,6 +144,7 @@ def head(page, title, desc, extra_ld=None, og_img="assets/img/og-image.jpg"):
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{e(canonical)}">
 <meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="google-site-verification" content="{GOOGLE_SITE_VERIFICATION}">
 <meta name="author" content="{NAME}">
 <meta name="theme-color" content="#0b182b">
 <meta name="geo.region" content="US-AK">
