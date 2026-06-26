@@ -5,7 +5,7 @@
 import os, html, datetime, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VER  = "17"  # bump to cache-bust styles.css / app.js
+VER  = "18"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
 SITE   = "https://hydrovacpro.com"
@@ -230,7 +230,6 @@ def local_business_ld():
         "@type":"ContactPoint","telephone":PHONE_TEL,"email":EMAIL,
         "contactType":"sales","areaServed":"US-AK","availableLanguage":["en"]
       }],
-      "aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"3","bestRating":"5"},
       "hasOfferCatalog":{
         "@type":"OfferCatalog","name":"Hydro Excavation & Vacuum Services",
         "itemListElement":[
@@ -443,21 +442,10 @@ def svc_card(ic, title, body, page="services.html"):
       <span class="svc-more">Learn more {icon('arrow')}</span>
     </a>"""
 
-REVIEWS = [
-    ("Love these guys. They came right out and helped all night to get the job done. Professional, fast, and they did not stop until it was finished.", "Google review · Fairbanks"),
-    ("Sent a request on a Saturday evening and got a call back the same day. Hard to find that kind of responsiveness from a contractor up here.", "Google review · Verified customer"),
-    ("An absolute game-changer for hydro excavation. One crew, one truck, and the work of several pieces of equipment done safely.", "Google review · Industrial client"),
-]
+# Live Trustindex Google-reviews widget (real names, stars, photos, auto-updating)
+TRUSTINDEX_SRC = "https://cdn.trustindex.io/loader.js?e88cfc875087169d11962624be5"
 
 def reviews_section():
-    cards = ""
-    for txt, who in REVIEWS:
-        stars = "".join(icon('star') for _ in range(5))
-        cards += f"""<figure class="rev-card reveal">
-          <div class="stars">{stars}</div>
-          <blockquote>{e(txt)}</blockquote>
-          <figcaption>{e(who)}</figcaption>
-        </figure>"""
     return f"""
 <section class="reviews">
   <div class="wrap">
@@ -466,7 +454,9 @@ def reviews_section():
       <h2>Trusted on the job site and after hours</h2>
       <p class="lead">Real reviews from the people who call us when the work has to be done right the first time.</p>
     </div>
-    <div class="rev-grid">{cards}</div>
+    <div class="ti-reviews">
+      <script defer async src="{TRUSTINDEX_SRC}"></script>
+    </div>
     <div class="rev-cta">
       <a class="btn btn-outline-light" href="{GREVIEWS}" target="_blank" rel="noopener">{icon('star')} Read our Google reviews</a>
       <a class="btn btn-outline-light" href="{FACEBOOK}" target="_blank" rel="noopener">{icon('fb')} Follow us on Facebook</a>

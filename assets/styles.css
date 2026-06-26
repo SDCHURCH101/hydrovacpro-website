@@ -217,6 +217,9 @@ a.tb-item:hover{color:#fff}
 .rev-card figcaption{font-family:var(--disp);font-weight:600;text-transform:uppercase;letter-spacing:.06em;
   font-size:.86rem;color:#9fb4d0}
 .rev-cta{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+/* live Trustindex google-reviews widget */
+.ti-reviews{min-height:220px;margin:0 auto 34px;max-width:1180px}
+.ti-reviews .ti-widget{margin:0 !important}
 
 /* faq */
 .faq-sec{padding:84px 0}
