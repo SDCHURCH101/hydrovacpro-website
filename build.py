@@ -8,7 +8,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 VER  = "17"  # bump to cache-bust styles.css / app.js
 
 # ------------------------------------------------------------------ business facts
-SITE   = "https://www.hydrovacpro.com"
+SITE   = "https://hydrovacpro.com"
 NAME   = "Hydrovac Pro"
 PHONE_DISPLAY = "(907) 759-8068"
 PHONE_TEL     = "+19077598068"

@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirect www to the bare domain (canonical)
+RewriteCond %{HTTP_HOST} ^www\.hydrovacpro\.com$ [NC]
+RewriteRule ^ https://hydrovacpro.com%{REQUEST_URI} [L,R=301]
+
+# Friendly 404
+ErrorDocument 404 /404.html
