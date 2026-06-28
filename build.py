@@ -65,6 +65,26 @@ NAV = [
     ("contact.html",    "Contact"),
 ]
 
+# ---- legacy WordPress URLs (still in Google's index) -> new equivalents.
+# Each key becomes <key>/index.html on GitHub Pages and redirects to the new page,
+# so an old search result, bookmark, or citation lands on the right page, not a 404.
+# Value "" = homepage.  Confirmed indexed: /about/ /contact/ /dig-safe/ /back-office/
+# plus the ones the owner flagged: /services/ /projects/ /certifications-licenses/.
+REDIRECTS = {
+    "about": "about.html", "about-us": "about.html",
+    "services": "services.html", "our-services": "services.html",
+    "dig-safe": "services.html", "hydro-excavation": "services.html",
+    "daylighting": "services.html", "potholing": "services.html",
+    "grease-trap-cleaning": "services.html", "oil-water-separator-cleaning": "services.html",
+    "back-office": "capabilities.html", "certifications-licenses": "capabilities.html",
+    "certifications": "capabilities.html", "capability-statement": "capabilities.html",
+    "contact": "contact.html", "contact-us": "contact.html",
+    "equipment": "equipment.html", "fleet": "equipment.html",
+    "projects": "industries.html", "portfolio": "industries.html", "gallery": "industries.html",
+    "industries": "industries.html",
+    "home": "", "blog": "", "news": "",
+}
+
 # ------------------------------------------------------------------ languages (Google Translate codes)
 LANGS = [
     ("en","English"),("es","Espanol"),("zh-CN","Chinese (Simplified)"),("zh-TW","Chinese (Traditional)"),
@@ -1218,6 +1238,28 @@ def page_404():
 </div></section>
 """ + tail()
 
+# ------------------------------------------------------------------ legacy redirect stub
+def redirect_stub(target):
+    url = SITE + "/" + target
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page moved | {NAME}</title>
+<link rel="canonical" href="{url}">
+<meta http-equiv="refresh" content="0; url={url}">
+<script>location.replace({_json.dumps(url)});</script>
+<style>body{{font-family:system-ui,Segoe UI,Arial,sans-serif;background:#0b182b;color:#eef2f7;display:grid;place-items:center;min-height:100vh;margin:0;text-align:center;padding:24px}}a{{color:#f5821f;font-weight:600}}</style>
+</head>
+<body>
+<div>
+<p>This page has a new home.</p>
+<p><a href="{url}">Continue to {NAME} &rarr;</a></p>
+</div>
+</body>
+</html>"""
+
 # ------------------------------------------------------------------ build
 def write(path, content):
     if path.endswith(".html"):
@@ -1249,6 +1291,13 @@ def main():
         f.write("google-site-verification: " + GOOGLE_VERIFY_FILE)
     print("wrote", GOOGLE_VERIFY_FILE)
     write("site.webmanifest",manifest())
+    # Legacy WordPress URLs (old Google-indexed pages) -> 0-second redirect to new equivalents
+    for old, target in REDIRECTS.items():
+        d = os.path.join(HERE, old)
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
+            f.write(redirect_stub(target))
+        print("redirect", "/" + old + "/ ->", "/" + (target or ""))
     print("Build complete.")
 
 if __name__ == "__main__":
